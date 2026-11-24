@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>書く | かみくだき読書ノート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="writer">
+  <header class="site-header">
+    <div class="wrap wide">
+      <a class="logo" href="index.html">かみくだき読書ノート</a>
+      <span class="nav-sub">✎ 書く</span>
+    </div>
+  </header>
+
+  <div id="offline" class="notice wrap" hidden>
+    <strong>保存サーバーが動いていません。</strong>
+    書く画面は自分のPCでだけ使えます。<code>book-notes</code> フォルダの <code>start.command</code> をダブルクリックして起動してください。
+  </div>
+
+  <main class="wrap wide editor">
+    <form id="form" class="ed-form" autocomplete="off">
+      <div class="ed-bar">
+        <select id="pick" aria-label="編集する記事"></select>
+        <span id="status" class="status"></span>
+      </div>
+
+      <p class="tip">💡 まずは<strong>本を閉じて</strong>書きましょう。書けないところ＝まだ説明できないところです。</p>
+
+      <fieldset>
+        <legend>本の情報</legend>
+        <label><span>タイトル<span class="req">必須</span></span><input name="title" required></label>
+        <div class="row">
+          <label>著者<input name="author"></label>
+          <label>読了日<input name="readDate" type="date"></label>
+        </div>
+        <div class="row">
+          <label>ジャンル<input name="category" list="cats" placeholder="例：ビジネス"></label>
+          <label>タグ<input name="tags" placeholder="カンマ区切り 例：習慣, 思考法"></label>
+        </div>
+        <datalist id="cats"></datalist>
+      </fieldset>
+
+      <fieldset>
+        <legend>① 一言でいうと<span class="req">必須</span></legend>
+        <input name="oneLine" required data-limit="30" placeholder="この本を30字以内で言うと？">
+        <small class="hint">30字に収めようとすると、本の核心が見えてきます。<span class="count"></span></small>
+      </fieldset>
+
+      <fieldset>
+        <legend>② なぜ読んだか</legend>
+        <textarea name="why" rows="3" placeholder="どんな疑問・悩みがあってこの本を手に取った？"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>③ 3つの要点</legend>
+        <small class="hint">全部書かない。「これだけ覚えておけばいい」3つを選ぶ。</small>
+        <div class="pt"><input name="p1h" placeholder="要点1の見出し"><textarea name="p1b" rows="3" placeholder="要点1の説明（自分の言葉で）"></textarea></div>
+        <div class="pt"><input name="p2h" placeholder="要点2の見出し"><textarea name="p2b" rows="3" placeholder="要点2の説明"></textarea></div>
+        <div class="pt"><input name="p3h" placeholder="要点3の見出し"><textarea name="p3b" rows="3" placeholder="要点3の説明"></textarea></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>④ 中学生に説明するなら</legend>
+        <textarea name="easy" rows="4" placeholder="専門用語を使わずに説明すると？"></textarea>
+        <small class="hint">カタカナ語・専門用語が出てきたら、それを言い換えられるか試してみる。</small>
+      </fieldset>
+
+      <fieldset>
+        <legend>⑤ 身近な例でいうと</legend>
+        <textarea name="example" rows="3" placeholder="自分の生活・仕事に置き換えると？「〜みたいなもの」"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>⑥ 自分の考え</legend>
+        <textarea name="opinion" rows="3" placeholder="賛成？反対？疑問に思ったことは？"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>⑦ 明日から試すこと</legend>
+        <input name="action" placeholder="1つでOK">
+      </fieldset>
+
+      <fieldset>
+        <legend>印象に残った一文（任意）</legend>
+        <input name="quote" placeholder="短く。長い引用は避ける">
+      </fieldset>
+
+      <fieldset>
+        <legend>理解度（自己評価）</legend>
+        <div class="range">
+          <input name="understanding" type="range" min="1" max="5" step="1" value="3">
+          <output id="uOut">3</output><span>/ 5</span>
+        </div>
+        <small class="hint">1 = 説明できない部分が多い ／ 5 = 何も見ずに人に説明できる</small>
+      </fieldset>
+
+      <div class="ed-actions">
+        <button type="submit" class="btn primary">保存して記事にする</button>
+        <button type="button" id="newBtn" class="btn">新しく書く</button>
+        <button type="button" id="delBtn" class="btn danger" hidden>この記事を削除</button>
+      </div>
+      <p class="hint">入力中の内容は自動で下書き保存されます（このブラウザ内）。</p>
+    </form>
+
+    <aside class="ed-preview">
+      <div class="pv-label">プレビュー</div>
+      <article id="preview"></article>
+    </aside>
+  </main>
+
+  <script src="books.js"></script>
+  <script src="app.js"></script>
+  <script src="write.js"></script>
+</body>
+</html>
