@@ -6,7 +6,9 @@
 
 自分のPC（127.0.0.1）からしか接続できません。追加ライブラリは不要です。
 """
+import datetime
 import http.server
+import subprocess
 import json
 import os
 import re
@@ -59,6 +61,33 @@ def clean(book):
     return b
 
 
+def git(*args):
+    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, timeout=60)
+    return r.returncode, (r.stdout + r.stderr).strip()
+
+
+def publish():
+    """books.js の変更を GitHub に push して公開する。"""
+    if not os.path.isdir(os.path.join(ROOT, ".git")):
+        return 400, {"ok": False, "error": "GitHub の設定がまだありません"}
+    git("add", "books.js")
+    code, _ = git("diff", "--cached", "--quiet")
+    if code != 0:
+        stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        code, out = git("commit", "-m", "記事を更新 (%s)" % stamp)
+        if code != 0:
+            return 500, {"ok": False, "error": "コミットに失敗しました: " + out[-300:]}
+    code, out = git("push", "-q", "origin", "HEAD")
+    if code != 0:
+        return 500, {"ok": False, "error": "GitHub への送信に失敗しました: " + out[-300:]}
+    url = ""
+    c, remote = git("remote", "get-url", "origin")
+    m = re.search(r"github\.com[:/]([^/]+)/([^/.]+)", remote) if c == 0 else None
+    if m:
+        url = "https://%s.github.io/%s/" % (m.group(1).lower(), m.group(2))
+    return 200, {"ok": True, "url": url}
+
+
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=ROOT, **kw)
@@ -103,6 +132,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                             break
                     else:
                         books.insert(0, b)
+                elif path.endswith("/api/publish"):
+                    return self._json(*publish())
                 elif path.endswith("/api/delete"):
                     books = [x for x in books if x.get("id") != payload.get("id")]
                 else:

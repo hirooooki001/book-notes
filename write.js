@@ -148,6 +148,22 @@
     } catch (err) { setStatus(err.message, "err"); }
   });
 
+  const pubBtn = document.getElementById("pubBtn");
+  pubBtn.addEventListener("click", async () => {
+    if (!confirm("保存済みの記事をネット上のサイトに公開します。よろしいですか？\n（まだ「保存」していない入力は公開されません）")) return;
+    pubBtn.disabled = true;
+    setStatus("公開中…", "muted");
+    try {
+      const j = await api("api/publish", {});
+      status.className = "status ok";
+      status.innerHTML = `公開しました ✓ 1〜2分で反映されます` + (j.url ? ` <a href="${esc(j.url)}" target="_blank">サイトを見る</a>` : "");
+    } catch (err) {
+      setStatus(err.message, "err");
+    } finally {
+      pubBtn.disabled = false;
+    }
+  });
+
   /* ----- 初期化 ----- */
   const editId = new URLSearchParams(location.search).get("id");
   let draft = null;

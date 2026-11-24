@@ -162,3 +162,5 @@ a { color: inherit; }
 .pv-label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .1em; }
 .ed-preview .art-head h1 { font-size: 26px; }
 .back.edit { margin-left: 16px; color: var(--accent); }
+.btn.pub { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.btn:disabled { opacity: .5; cursor: wait; }

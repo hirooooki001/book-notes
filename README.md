@@ -39,18 +39,10 @@
 - `server.py` / `start.command` … 書く画面用のローカルサーバー
 - `style.css` / `app.js` … 見た目と表示処理
 
-## 世の中に公開する方法
+## ネットに公開する
 
-このフォルダはそのまま静的サイトとして公開できます（公開先では「書く」リンクは自動で隠れます）。
+公開URL： **https://hirooooki001.github.io/book-notes/**
+（GitHub リポジトリ： https://github.com/hirooooki001/book-notes ）
 
-**A. Netlify Drop（いちばん簡単）**
-1. https://app.netlify.com/drop を開く
-2. `book-notes` フォルダをドラッグ＆ドロップ
-3. 発行されたURLが公開ページ。記事を書いたら同じサイトに再度ドロップして更新
-
-**B. GitHub Pages（無料・更新履歴が残る）**
-1. GitHubでリポジトリを作り、このフォルダの中身をアップロード
-2. Settings → Pages → Branch を `main` にして保存
-3. 記事を書いたら `books.js` をアップロードし直す（git に慣れていれば push）
-
-※ `server.py` `start.command` `write.html` `write.js` は公開されても害はありません（サーバーが無いので書き込みはできません）。気になる場合は公開時に除いてください。
+記事を書いて「保存」したあと、書く画面の **「🌐 サイトに公開する」** を押すだけで反映されます（1〜2分かかります）。
+公開ページでは「書く」リンクは自動で隠れ、書き込みもできません。
