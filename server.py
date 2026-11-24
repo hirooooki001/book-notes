@@ -12,6 +12,7 @@ import subprocess
 import json
 import os
 import re
+import socket
 import sys
 import tempfile
 import threading
@@ -150,12 +151,35 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             sys.stderr.write("%s\n" % (fmt % args))
 
 
+def in_use(port):
+    """localhost（IPv4/IPv6どちらでも）で既に誰かが使っているか。"""
+    for host in ("127.0.0.1", "::1"):
+        try:
+            with socket.create_connection((host, port), timeout=0.3):
+                return True
+        except OSError:
+            pass
+    return False
+
+
 def main():
-    server = http.server.ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    url = "http://localhost:%d/write.html" % PORT
+    global PORT
+    server = None
+    for p in range(PORT, PORT + 20):  # 使用中なら次の番号を試す
+        if in_use(p):
+            continue
+        try:
+            server = http.server.ThreadingHTTPServer(("127.0.0.1", p), Handler)
+            PORT = p
+            break
+        except OSError:
+            continue
+    if server is None:
+        sys.exit("空いているポートが見つかりませんでした")
+    url = "http://127.0.0.1:%d/write.html" % PORT
     print("かみくだき読書ノート を起動しました")
     print("  書く画面: " + url)
-    print("  サイト  : http://localhost:%d/" % PORT)
+    print("  サイト  : http://127.0.0.1:%d/" % PORT)
     print("終了するには このウィンドウで Ctrl + C を押すか、ウィンドウを閉じてください。")
     if "--no-browser" not in sys.argv:
         threading.Timer(0.8, lambda: webbrowser.open(url)).start()
